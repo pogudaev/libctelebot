@@ -20,9 +20,9 @@ freely, subject to the following restrictions:
 #ifndef CT_NET_API_H
 #define CT_NET_API_H
 
-#include <ct_buffer.h>
+#include "ct_buffer.h"
 #include <jansson.h>
-#include <ct_param_list.h>
+#include "ct_param_list.h"
 
 /**
  * @brief ct_post - отправляет POST запрос на сервер
