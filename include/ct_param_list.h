@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 #ifndef CT_PARAM_LIST_H
 #define CT_PARAM_LIST_H
 
-#include <ct_buffer.h>
+#include "ct_buffer.h"
 #include <stdbool.h>
 
 typedef enum {

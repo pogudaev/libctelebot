@@ -21,8 +21,8 @@ freely, subject to the following restrictions:
 #define CT_API_H
 
 #include <stdbool.h>
-#include <ct_message.h>
-#include <ct_buffer.h>
+#include "ct_message.h"
+#include "ct_buffer.h"
 
 struct ct_api_s;
 typedef struct ct_api_s ct_api_t;

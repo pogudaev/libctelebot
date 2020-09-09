@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 
 
 #include <ct_api.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <ct_queue.h>
@@ -27,9 +26,7 @@ freely, subject to the following restrictions:
 #include <ct_buffer.h>
 #include <ct_param_list.h>
 #include <ct_net_api.h>
-
 #include <jansson.h>
-
 #include <ct_common.h>
 
 struct ct_api_s
@@ -99,9 +96,6 @@ bool ct_api_update(ct_api_t *ct_api)
     size_t index;
     json_t *value;
 
-    ct_log_info("\n%s\n", json_dumps(result, JSON_INDENT(3)));
-
-
     json_array_foreach(result, index, value) {
         json_t *j_message = json_object_get(value, "message");
         json_t *j_text = json_object_get(j_message, "text");
@@ -112,6 +106,7 @@ bool ct_api_update(ct_api_t *ct_api)
         }
 
         if (j_text) {
+            ct_log_info("Receive Text");
             json_t *j_chat = json_object_get(j_message, "chat");
             json_t *j_date = json_object_get(j_message, "date");
             json_t *j_mess_id = json_object_get(j_message, "message_id");
