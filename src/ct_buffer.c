@@ -22,68 +22,70 @@ freely, subject to the following restrictions:
 
 #include <string.h>
 
-struct ct_buffer_s{
-    void *data;
-    size_t size;
+struct ct_buffer_s {
+	void *data;
+	size_t size;
 };
 
 ct_buffer_t *ct_buffer_create()
 {
-    ct_buffer_t *buffer = (ct_buffer_t *) malloc(sizeof (ct_buffer_t));
+	ct_buffer_t *buffer = (ct_buffer_t *) malloc(sizeof (ct_buffer_t));
 
-    if (buffer) {
-        buffer->data = malloc(1);
-        buffer->size = 0;
-        ((char *)(buffer->data))[0] = 0;
-    }
+	if (buffer) {
+		buffer->data = malloc(1);
+		buffer->size = 0;
+		((char *)(buffer->data))[0] = 0;
+	}
 
-    return buffer;
+	return buffer;
 }
 
 void ct_buffer_free(ct_buffer_t *buffer)
 {
-    if (buffer) {
-        free(buffer->data);
-        free(buffer);
-    }
+	if (buffer) {
+		free(buffer->data);
+		free(buffer);
+	}
 }
 
 void ct_buffer_set(ct_buffer_t *buffer, const void *data, size_t size)
 {
-    buffer->data = realloc(buffer->data, size + 1); //небезопасно
-    memcpy(buffer->data, data, size);
-    buffer->size = size;
-    ((char *)(buffer->data))[buffer->size] = 0;
+	buffer->data = realloc(buffer->data, size + 1); //небезопасно
+	memcpy(buffer->data, data, size);
+	buffer->size = size;
+	((char *)(buffer->data))[buffer->size] = 0;
 }
 
 void ct_buffer_add(ct_buffer_t *buffer, const void *data, size_t size)
 {
-    if (size == 0) return;
+	if (size == 0) {
+		return;
+	}
 
-    buffer->data = realloc(buffer->data, buffer->size + size + 1); //небезопасно
-    memcpy(((char *)(buffer->data)) + buffer->size, data, size);
-    buffer->size += size;
-    ((char *)(buffer->data))[buffer->size] = 0;
+	buffer->data = realloc(buffer->data, buffer->size + size + 1); //небезопасно
+	memcpy(((char *)(buffer->data)) + buffer->size, data, size);
+	buffer->size += size;
+	((char *)(buffer->data))[buffer->size] = 0;
 }
 
 void ct_buffer_get(const ct_buffer_t *buffer, void **data, size_t *size)
 {
-    (*data) = malloc(buffer->size + 1);
-    memcpy(*data, buffer->data, buffer->size + 1);
-    *size = buffer->size;
+	(*data) = malloc(buffer->size + 1);
+	memcpy(*data, buffer->data, buffer->size + 1);
+	*size = buffer->size;
 }
 
 void ct_buffer_set_string(ct_buffer_t *buffer, const char *string)
 {
-    ct_buffer_set(buffer, string, strlen(string) + 1);
+	ct_buffer_set(buffer, string, strlen(string) + 1);
 }
 
 const void *ct_buffer_get_data(const ct_buffer_t *buffer)
 {
-    return (const void *) buffer->data;
+	return (const void *) buffer->data;
 }
 
 size_t ct_buffer_get_size(const ct_buffer_t *buffer)
 {
-    return buffer->size;
+	return buffer->size;
 }
