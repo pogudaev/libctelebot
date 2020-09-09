@@ -30,27 +30,33 @@ static log_print_function_t _log_print_function = NULL;
 
 void ct_log_print(int priority, const char *file, long line, const char *__restrict format, ...)
 {
-    if (!_log_print_function) return;
+	if (!_log_print_function) {
+		return;
+	}
 
-    const char *f = strrchr(file, '/');
-    if (f) f++;
-    else f = file;
+	const char *f = strrchr(file, '/');
 
-    char log_buffer[MAX_LOG_LENGTH];
-    snprintf(log_buffer, MAX_LOG_LENGTH, "[%s:%ld] ", f, line);
+	if (f) {
+		f++;
+	} else {
+		f = file;
+	}
 
-    size_t fill = strlen(log_buffer);
+	char log_buffer[MAX_LOG_LENGTH];
+	snprintf(log_buffer, MAX_LOG_LENGTH, "[%s:%ld] ", f, line);
 
-    char *mess = log_buffer + fill;
+	size_t fill = strlen(log_buffer);
 
-    va_list(args);
-    va_start(args, format);
-    vsnprintf(mess, MAX_LOG_LENGTH - fill - 1, format, args);
-    strcat(mess, "\n");
-    (*_log_print_function)(priority, "%s", log_buffer);
+	char *mess = log_buffer + fill;
+
+	va_list(args);
+	va_start(args, format);
+	vsnprintf(mess, MAX_LOG_LENGTH - fill - 1, format, args);
+	strcat(mess, "\n");
+	(*_log_print_function)(priority, "%s", log_buffer);
 }
 
 void ct_set_log_print_function(log_print_function_t log_print_function)
 {
-    _log_print_function = log_print_function;
+	_log_print_function = log_print_function;
 }

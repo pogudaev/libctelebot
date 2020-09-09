@@ -21,67 +21,72 @@ freely, subject to the following restrictions:
 #include <ct_message.h>
 #include <string.h>
 
-struct ct_message_s{
-    ssize_t message_id;
-    time_t date;
-    ssize_t chat_id;
-    char *text; //0-4096
-    //TODO - добавить обработку картинок и прочего.
+struct ct_message_s {
+	ssize_t message_id;
+	time_t date;
+	ssize_t chat_id;
+	char *text; //0-4096
+	//TODO - добавить обработку картинок и прочего.
 };
 
 ct_message_t *ct_message_create()
 {
-    ct_message_t *ct_message = (ct_message_t *) calloc(sizeof (ct_message_t), 1);
-    if (ct_message) {
-        ct_message->text = calloc(1, 1);
-    }
-    return ct_message;
+	ct_message_t *ct_message = (ct_message_t *) calloc(sizeof (ct_message_t), 1);
+
+	if (ct_message) {
+		ct_message->text = calloc(1, 1);
+	}
+
+	return ct_message;
 }
 
 void ct_message_free(ct_message_t *ct_message)
 {
-    if (ct_message->text) free(ct_message->text);
-    free(ct_message);
+	if (ct_message->text) {
+		free(ct_message->text);
+	}
+
+	free(ct_message);
 }
 
 void ct_message_set_message_id(ct_message_t *ct_message, ssize_t message_id)
 {
-    ct_message->message_id = message_id;
+	ct_message->message_id = message_id;
 }
 
 void ct_message_set_date(ct_message_t *ct_message, time_t date)
 {
-    ct_message->date = date;
+	ct_message->date = date;
 }
 
 void ct_message_set_chat_id(ct_message_t *ct_message, ssize_t chat_id)
 {
-    ct_message->chat_id = chat_id;
+	ct_message->chat_id = chat_id;
 }
 
 void ct_message_set_text(ct_message_t *ct_message, const char *text)
 {
-    free(ct_message->text);
-    ct_message->text = strdup(text);
+	free(ct_message->text);
+	ct_message->text = strdup(text);
 }
 
 ssize_t ct_message_get_message_id(const ct_message_t *ct_message)
 {
-    return ct_message->message_id;
+	return ct_message->message_id;
 }
 
 time_t ct_message_get_date(const ct_message_t *ct_message)
 {
-    return ct_message->date;
+	return ct_message->date;
 }
 
 ssize_t ct_message_get_chat_id(const ct_message_t *ct_message)
 {
-    return ct_message->chat_id;
+	return ct_message->chat_id;
 }
 
 const char *ct_message_get_text(const ct_message_t *ct_message)
 {
-    return ct_message->text;
+	return ct_message->text;
 }
 

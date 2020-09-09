@@ -24,8 +24,8 @@ freely, subject to the following restrictions:
 #include <stdbool.h>
 
 typedef enum {
-    ct_type_default,
-    ct_type_image_jpeg
+	ct_type_default,
+	ct_type_image_jpeg
 } ct_type_t;
 
 struct ct_param_list_s;
