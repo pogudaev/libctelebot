@@ -25,8 +25,20 @@ freely, subject to the following restrictions:
 
 typedef void (*log_print_function_t)(int, const char *, ...);
 
+/**
+ * @brief ct_set_log_print_function устанавливает функцию для логирования
+ * @param log_print_function - callback вызываемый для записи логов
+ */
 void ct_set_log_print_function(log_print_function_t log_print_function);
 
+/**
+ * @brief ct_log_print печать в лог
+ * @param priority приоритет
+ * @param file файл
+ * @param line строка в файле
+ * @param format форматная строка с последущими аргументами
+ * @note не рекомендуется к прямому использованию. Правильнее будет использовать макросы ct_log_debug, ct_log_info и т.д.
+ */
 void ct_log_print(int priority, const char *file, long line, const char *__restrict format, ...);
 
 #define ct_log_debug(...)      ct_log_print(LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)

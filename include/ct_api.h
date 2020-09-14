@@ -35,8 +35,8 @@ typedef struct ct_api_s ct_api_t;
 ct_api_t *ct_api_create(void);
 
 /**
- * @brief ct_api_free очищает память выделенную под объект ct_api_t
- * @param ct_api указатель на объект ct_api_t для которого требуется очистка памяти
+ * @brief ct_api_free освобождает память выделенную под объект ct_api_t
+ * @param ct_api указатель на объект ct_api_t для которого требуется освобождение памяти
  */
 void ct_api_free(ct_api_t *ct_api);
 

@@ -24,17 +24,45 @@ struct ct_queue_s;
 typedef struct ct_queue_s ct_queue_t;
 typedef void (*free_function_t)(void *);
 
+/**
+ * @brief ct_queue_create создает очередь, объект типа ct_queue_t
+ * @return указатель на объект типа ct_queue_t
+ * @note объект создается в куче и требует последущего освобождения памяти функцией ct_queue_free
+ */
 ct_queue_t *ct_queue_create(void);
+
+/**
+ * @brief ct_queue_free освобождает память выделенную для объекта ct_queue_t
+ * @param ct_queue указатель на объект типа ct_queue_t
+ * @note память освобождается также и для хранящихся внутри элементов
+ */
 void ct_queue_free(ct_queue_t *ct_queue);
+
+/**
+ * @brief ct_queue_set_free_function задает функцию, которая вызывается для освобождения памяти объектов в очереди
+ * @param ct_queue указатель на объект типа ct_queue_t
+ * @param free_function указатель на освобождающую память функцию
+ */
 void ct_queue_set_free_function(ct_queue_t *ct_queue, free_function_t free_function);
 
+/**
+ * @brief ct_queue_push помещает новый элемент в конец очереди
+ * @param ct_queue указатель на объект типа ct_queue_t
+ * @param object помещаемый объект, должен быть создан в куче, переходит во владение очереди
+ */
 void ct_queue_push(ct_queue_t *ct_queue, void *object);
+
+/**
+ * @brief ct_queue_pull получает элемент из начала очереди удаляя первый элемент очереди.
+ * @param ct_queue указатель на объект типа ct_queue_t
+ * @return указатель на полученный элемент, требует дальнейшей очистки памяти
+ */
 void *ct_queue_pull(ct_queue_t *ct_queue);
 
+/**
+ * @brief ct_queue_erase удаляет из очереди все объекты
+ * @param ct_queue указатель на объект типа ct_queue_t
+ */
 void ct_queue_erase(ct_queue_t *ct_queue);
-
-
-
-
 
 #endif // CT_QUEUE_H

@@ -32,17 +32,64 @@ struct ct_param_list_s;
 typedef struct ct_param_list_s ct_param_list_t;
 typedef void (*ct_param_list_foreach_function_t)(const char *param_name, const ct_buffer_t *param_data, ct_type_t ct_type, void *user_args);
 
-
+/**
+ * @brief ct_param_list_create создает список параметров
+ * @return указатель на объект ct_param_list_t, либо NULL в случае ошибки
+ * @note память выделяется в куче и требует освобождения вызовом ct_param_list_free
+ */
 ct_param_list_t *ct_param_list_create(void);
+
+/**
+ * @brief ct_param_list_free освобождает память выделенную для объекта ct_param_list_t
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @note эта функция также освобождает память для всех элементов которые храняться в списке
+ */
 void ct_param_list_free(ct_param_list_t *ct_param_list);
+
+/**
+ * @brief ct_param_list_erase - удаляет все элементы списка параметров
+ * @param ct_param_list указатель на объект ct_param_list_t
+ */
 void ct_param_list_erase(ct_param_list_t *ct_param_list);
 
+/**
+ * @brief ct_param_list_add_string добавляет строковый параметр в список
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @param param_name имя параметра
+ * @param param_value значение параметра
+ */
 void ct_param_list_add_string(ct_param_list_t *ct_param_list, const char *param_name, const char *param_value);
+
+/**
+ * @brief ct_param_list_add_integer добавляет числовой параметр в список
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @param param_name имя параметра
+ * @param param_value значение параметра
+ */
 void ct_param_list_add_integer(ct_param_list_t *ct_param_list, const char *param_name, ssize_t param_value);
+
+/**
+ * @brief ct_param_list_add_boolean добавляет булевой параметр в список
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @param param_name имя параметра
+ * @param param_value значение параметра
+ */
 void ct_param_list_add_boolean(ct_param_list_t *ct_param_list, const char *param_name, bool param_value);
+
+/**
+ * @brief ct_param_list_add_image добавляет изображение как параметр в список
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @param param_name имя параметра
+ * @param param_data буфер с данными содержащий изображение
+ */
 void ct_param_list_add_image(ct_param_list_t *ct_param_list, const char *param_name, const ct_buffer_t *param_data);
 
-
+/**
+ * @brief ct_param_list_foreach производит действие описываемое функцией ct_param_list_foreach_function с каждым элементов списка
+ * @param ct_param_list указатель на объект ct_param_list_t
+ * @param ct_param_list_foreach_function функция обработчик
+ * @param user_args дополнительные аргументы для функции обработчика
+ */
 void ct_param_list_foreach(const ct_param_list_t *ct_param_list, ct_param_list_foreach_function_t ct_param_list_foreach_function, void *user_args);
 
 #endif // CT_PARAM_LIST_H

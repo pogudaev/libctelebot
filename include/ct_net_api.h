@@ -25,14 +25,19 @@ freely, subject to the following restrictions:
 #include "ct_param_list.h"
 
 /**
- * @brief ct_post - отправляет POST запрос на сервер
- * @param req - reqest line
- * @param params - список параметров для POST запроса (будет очищен после вызова)
+ * @brief ct_post отправляет POST запрос на сервер
+ * @param req reqest line
+ * @param params список параметров для POST запроса (будет очищен после вызова)
  * @return ответ в виде json (требуется последующая очистка), NULL - если ошибка.
  */
-
 json_t *ct_post(const char *req, ct_param_list_t *params);
 
+/**
+ * @brief ct_load_file загружает файл
+ * @param req reqest line
+ * @return буфер с файлом
+ * @note буфер создается в куче и требует последущего освобождения памяти
+ */
 ct_buffer_t *ct_load_file(const char *req);
 
 #endif // CT_NET_API_H
