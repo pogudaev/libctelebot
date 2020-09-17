@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_COMMON_H
 #define CT_COMMON_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdarg.h>
 #include <syslog.h>
 
@@ -48,6 +52,9 @@ void ct_log_print(int priority, const char *file, long line, const char *__restr
 #define ct_log_error(...)      ct_log_print(LOG_ERR, __FILE__, __LINE__, __VA_ARGS__)
 #define ct_log_crit(...)      ct_log_print(LOG_CRIT, __FILE__, __LINE__, __VA_ARGS__)
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_COMMON_H
 

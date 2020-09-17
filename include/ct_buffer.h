@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_BUFFER_H
 #define CT_BUFFER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <jansson.h>
 
@@ -94,6 +98,8 @@ void ct_buffer_set_string(ct_buffer_t *buffer, const char *string);
  */
 #define ct_buffer_get_string(b) (const char *)(ct_buffer_get_data(buff));
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_BUFFER_H

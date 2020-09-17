@@ -17,7 +17,6 @@ freely, subject to the following restrictions:
     pogudaev@yandex.ru
 */
 
-
 #include <ct_common.h>
 
 #include <stdlib.h>

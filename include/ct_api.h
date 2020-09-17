@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_API_H
 #define CT_API_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include "ct_message.h"
 #include "ct_buffer.h"
@@ -91,5 +95,9 @@ bool ct_api_send_photo(ct_api_t *ct_api, ssize_t chat_id, const ct_buffer_t *con
  * @note сообщение ct_message_t создается в куче. Требуется очистка памяти функцией ct_message_free
  */
 ct_message_t *ct_api_recv_message(ct_api_t *ct_api);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_API_H

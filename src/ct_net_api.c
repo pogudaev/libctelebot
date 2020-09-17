@@ -25,8 +25,6 @@ freely, subject to the following restrictions:
 #include <stdarg.h>
 #include <ct_common.h>
 
-//#include "logger.h"
-
 static size_t write_data_cb(void *contents, size_t size, size_t nmemb, void *userp)
 {
 	size_t realsize = size * nmemb;
@@ -131,7 +129,6 @@ json_t *ct_post(const char *req, ct_param_list_t *params)
 		long status_code = 0;
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
 
-
 		if (status_code < 200 || status_code > 299) {
 			ct_log_error("request receive error %ld: %s", status_code, ct_buffer_get_data(answer));
 		}
@@ -146,6 +143,10 @@ json_t *ct_post(const char *req, ct_param_list_t *params)
 	json_error_t error;
 	json_t *result = json_loadb(ct_buffer_get_data(answer), ct_buffer_get_size(answer), JSON_DECODE_ANY, &error);
 	ct_buffer_free(answer);
+
+	if (result == NULL){
+		ct_log_error("json_loadb error: '%s'", error.text);
+	}
 
 	return result;
 }

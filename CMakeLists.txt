@@ -7,7 +7,7 @@ option(BUILD_SHARED_LIBS "Build the shared library" ON)
 #============================== VERSION ================================
 set(LIB_VERSION_MAJOR 1)
 set(LIB_VERSION_MINOR 1)
-set(LIB_VERSION_PATCH 0)
+set(LIB_VERSION_PATCH 1)
 set(LIB_VERSION_STRING ${LIB_VERSION_MAJOR}.${LIB_VERSION_MINOR}.${LIB_VERSION_PATCH})
 #=======================================================================
 

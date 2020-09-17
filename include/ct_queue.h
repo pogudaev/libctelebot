@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_QUEUE_H
 #define CT_QUEUE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct ct_queue_s;
 typedef struct ct_queue_s ct_queue_t;
 typedef void (*free_function_t)(void *);
@@ -64,5 +68,9 @@ void *ct_queue_pull(ct_queue_t *ct_queue);
  * @param ct_queue указатель на объект типа ct_queue_t
  */
 void ct_queue_erase(ct_queue_t *ct_queue);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_QUEUE_H

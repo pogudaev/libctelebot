@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_MESSAGE_H
 #define CT_MESSAGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
@@ -143,5 +147,9 @@ const char *ct_message_get_file_id(const ct_message_t *ct_message);
  * @return тип сообщения
  */
 ct_message_type_t ct_message_get_message_type(const ct_message_t *ct_message);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_MESSAGE_H

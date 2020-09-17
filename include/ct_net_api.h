@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_NET_API_H
 #define CT_NET_API_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ct_buffer.h"
 #include <jansson.h>
 #include "ct_param_list.h"
@@ -39,5 +43,9 @@ json_t *ct_post(const char *req, ct_param_list_t *params);
  * @note буфер создается в куче и требует последущего освобождения памяти
  */
 ct_buffer_t *ct_load_file(const char *req);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_NET_API_H

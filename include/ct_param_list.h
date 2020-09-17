@@ -20,6 +20,10 @@ freely, subject to the following restrictions:
 #ifndef CT_PARAM_LIST_H
 #define CT_PARAM_LIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ct_buffer.h"
 #include <stdbool.h>
 
@@ -91,5 +95,9 @@ void ct_param_list_add_image(ct_param_list_t *ct_param_list, const char *param_n
  * @param user_args дополнительные аргументы для функции обработчика
  */
 void ct_param_list_foreach(const ct_param_list_t *ct_param_list, ct_param_list_foreach_function_t ct_param_list_foreach_function, void *user_args);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CT_PARAM_LIST_H
