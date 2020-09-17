@@ -78,11 +78,11 @@ ct_buffer_t *ct_api_get_file(ct_api_t *ct_api, const char *file_id);
  * @param ct_api указатель на объект ct_api_t
  * @param chat_id идентификатор чата
  * @param content указатель на буффер с передаваемыми данными
- * @note буфер должен быть создан в куче, он переходит во владение этой функции и не требует очистки
+ * @param caption строка - подпись к рисунку, или NULL если не требуется
  * @note в буфере должно находиться валидное содержимое JPEG-файла, другие форматы пока не поддерживаются
  * @return true - успех, false - ошибка
  */
-bool ct_api_send_photo(ct_api_t *ct_api, ssize_t chat_id, ct_buffer_t *content);
+bool ct_api_send_photo(ct_api_t *ct_api, ssize_t chat_id, const ct_buffer_t *content, const char *caption);
 
 /**
  * @brief ct_api_recv_message возвращает загруженное принятое сообщение

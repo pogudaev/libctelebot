@@ -80,15 +80,44 @@ int main()
 				break;
 			}
 
-			const char *text = ct_message_get_text(recv_msg);
 			time_t unixtime =  ct_message_get_date(recv_msg);
+			struct tm *local = localtime(&unixtime);
 			ssize_t chat_id = ct_message_get_chat_id(recv_msg);
 
-			struct tm *local = localtime(&unixtime);
+			switch (ct_message_get_message_type(recv_msg)) {
+				case ct_message_type_text: {
+					const char *text = ct_message_get_text(recv_msg);
+					char send_text[1024];
+					snprintf(send_text, sizeof(send_text), "Receive message:\n'%s'\n%s", text, asctime(local));
+					ct_api_send_text(tlgrm, chat_id, send_text);
 
-			char send_text[1024];
-			snprintf(send_text, sizeof(send_text), "Receive message:\n'%s'\n%s", text, asctime(local));
-			ct_api_send_text(tlgrm, chat_id, send_text);
+					if (strcmp(text, "quit") == 0) {
+						ct_api_update(tlgrm); //подчищаем принятые сообщения
+						run = false;
+					}
+				}
+				break;
+
+				case ct_message_type_photo: {
+					const char *file_id = ct_message_get_file_id(recv_msg);
+					const char *caption = ct_message_get_caption(recv_msg);
+					ct_buffer_t *file_buffer = ct_api_get_file(tlgrm, file_id);
+					char new_caption[1024];
+
+					if (caption) {
+						snprintf(new_caption, sizeof(new_caption), "Receive message:\n'%s'\n%s", caption, asctime(local));
+					} else {
+						snprintf(new_caption, sizeof(new_caption), "Receive message\n%s", asctime(local));
+					}
+
+					ct_api_send_photo(tlgrm, chat_id, file_buffer, new_caption);
+					ct_buffer_free(file_buffer);
+				}
+				break;
+
+				default:
+					break;
+			}
 
 			ct_message_free(recv_msg);
 		}

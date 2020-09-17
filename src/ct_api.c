@@ -72,6 +72,100 @@ void ct_api_set_token(ct_api_t *ct_api, const char *token)
 	ct_api->token = strdup(token);
 }
 
+static void ct_api_rx_message_proc(ct_api_t *ct_api, const json_t *j_message)
+{
+	json_t *j_chat = json_object_get(j_message, "chat");
+	json_t *j_chat_id = json_object_get(j_chat, "id");
+
+	if (j_chat_id == NULL) {
+		ct_log_error("Message without chat_id");
+		return;
+	}
+
+	//создаем объект с сообщением
+	ct_message_t *ct_message = ct_message_create();
+
+	//Определяем тип сообщения и заполняем специфичные поля
+	json_t *j_text = json_object_get(j_message, "text");
+	json_t *j_photo = json_object_get(j_message, "photo");
+
+	ct_message_type_t message_type = ct_message_type_unknown;
+
+	if (j_text) {
+		ct_log_info("receive text");
+		message_type = ct_message_type_text;
+		const char *text = json_string_value(j_text);
+
+		if (text == NULL || *text == '\0') {
+			ct_log_error("Text message without text");
+			ct_message_free(ct_message);
+			return;
+		}
+
+		ct_message_set_text(ct_message, json_string_value(j_text));
+	} else if (j_photo) {
+		ct_log_info("receive photo");
+		message_type = ct_message_type_photo;
+
+		json_t *j_caption = json_object_get(j_message, "caption");
+		ct_message_set_caption(ct_message, json_string_value(j_caption));
+
+		//Фото передается массивом из нескольких фотографий с разным резрешением. Берем самую крупную.
+		const char *file_id = NULL;
+		ssize_t file_size = 0;
+		size_t index;
+		json_t *j_item_photo;
+		json_array_foreach(j_photo, index, j_item_photo) {
+			json_t *j_file_id = json_object_get(j_item_photo, "file_id");
+			const char *file_id_temp = json_string_value(j_file_id);
+
+			if (file_id_temp == NULL || *file_id_temp == '\0') {
+				ct_log_error("Photo message without file_id");
+				ct_message_free(ct_message);
+				continue;
+			}
+
+			json_t *j_file_size =  json_object_get(j_item_photo, "file_size");
+			ssize_t file_size_temp = json_integer_value(j_file_size);
+
+			if (file_size_temp > file_size) {
+				file_size = file_size_temp;
+				file_id = file_id_temp;
+			}
+		}
+
+		if (file_id == NULL || file_size == 0) {
+			ct_log_error("Photo message without photo");
+			ct_message_free(ct_message);
+			return;
+		}
+
+		ct_log_debug("file id = %s", file_id);
+		ct_log_debug("file size = %zd", file_size);
+		ct_message_set_file_id(ct_message, file_id);
+
+	} else {
+		//тип неопределен или неподдерживается на текущий момент
+		ct_log_warning("Unsupported message type");
+		ct_message_free(ct_message);
+		return;
+	}
+
+	// Заполняем остальные поля
+	ct_message_set_message_type(ct_message, message_type);
+
+	json_t *j_date = json_object_get(j_message, "date");
+	ct_message_set_date(ct_message, (time_t) json_integer_value(j_date));
+
+	json_t *j_mess_id = json_object_get(j_message, "message_id");
+	ct_message_set_message_id(ct_message, json_integer_value(j_mess_id));
+
+	ct_message_set_chat_id(ct_message, json_integer_value(j_chat_id));
+
+	//Помещаем сообщение в очередь
+	ct_queue_push(ct_api->unread_messages, ct_message);
+}
+
 bool ct_api_update(ct_api_t *ct_api)
 {
 	ct_param_list_t *ct_param_list = ct_param_list_create();
@@ -84,46 +178,22 @@ bool ct_api_update(ct_api_t *ct_api)
 		return false;
 	}
 
-
 	size_t size = json_array_size(result);
 
 	if (size) {
 		json_t *last_updates = json_array_get(result, size - 1);
 		ssize_t last_update_id = (ssize_t) json_integer_value(json_object_get(last_updates, "update_id"));
 		ct_api->last_update_id = last_update_id + 1;
+	} else {
+		return true;
 	}
-
 
 	size_t index;
 	json_t *value;
 
 	json_array_foreach(result, index, value) {
 		json_t *j_message = json_object_get(value, "message");
-		json_t *j_text = json_object_get(j_message, "text");
-		json_t *j_photo = json_object_get(j_message, "photo");
-
-		if (j_photo) {
-			ct_log_info("Receive Photo");
-		}
-
-		if (j_text) {
-			ct_log_info("Receive Text");
-			json_t *j_chat = json_object_get(j_message, "chat");
-			json_t *j_date = json_object_get(j_message, "date");
-			json_t *j_mess_id = json_object_get(j_message, "message_id");
-			json_t *j_chat_id = json_object_get(j_chat, "id");
-
-			if (!j_chat_id || !j_date || !j_mess_id || !j_text) {
-				continue;
-			}
-
-			ct_message_t *ct_message = ct_message_create();
-			ct_message_set_date(ct_message, (time_t) json_integer_value(j_date));
-			ct_message_set_text(ct_message, json_string_value(j_text));
-			ct_message_set_chat_id(ct_message, json_integer_value(j_chat_id));
-			ct_message_set_message_id(ct_message, json_integer_value(j_mess_id));
-			ct_queue_push(ct_api->unread_messages, ct_message);
-		}
+		ct_api_rx_message_proc(ct_api, j_message);
 	}
 	json_decref(result);
 	return true;
@@ -148,7 +218,8 @@ static json_t *ct_api_request(const ct_api_t *ct_api, const char *method, ct_par
 		json_t *j_result = json_object_get(j_answer, "result");
 
 		if (j_result) {
-			out = json_deep_copy(j_result);
+			json_incref(j_result);
+			out = j_result;
 		}
 	}
 
@@ -200,14 +271,17 @@ ct_buffer_t *ct_api_get_file(ct_api_t *ct_api, const char *file_id)
 	char req[1024];
 	snprintf(req, sizeof(req), "https://api.telegram.org/file/bot%s/%s", ct_api->token, file_path);
 
+	free(file_path);
+
 	return ct_load_file(req);
 }
 
-bool ct_api_send_photo(ct_api_t *ct_api, ssize_t chat_id, ct_buffer_t *content)
+bool ct_api_send_photo(ct_api_t *ct_api, ssize_t chat_id, const ct_buffer_t *content, const char *caption)
 {
 	ct_param_list_t *ct_param_list = ct_param_list_create();
 	ct_param_list_add_integer(ct_param_list, "chat_id", chat_id);
 	ct_param_list_add_image(ct_param_list, "photo", content);
+	ct_param_list_add_string(ct_param_list, "caption", caption);
 
 	json_t *result = ct_api_request(ct_api, "sendPhoto", ct_param_list);
 

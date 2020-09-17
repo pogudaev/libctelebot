@@ -13,28 +13,48 @@ freely, subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
-    Alexander Pogudaev
-    pogudaev@yandex.ru
+	Alexander Pogudaev
+	pogudaev@yandex.ru
 */
-
 
 #include <ct_message.h>
 #include <string.h>
 
 struct ct_message_s {
 	ssize_t message_id;
-	time_t date;
 	ssize_t chat_id;
-	char *text; //0-4096
-	//TODO - добавить обработку картинок и прочего.
+	time_t date;
+	ct_message_type_t message_type;
+	char *text; //до 4096 по документации
+	char *file_id;
+	char *caption; //до 1024 по документации
 };
+
+/**
+ * @brief create_copy_string создает в куче буфер куда копирует строку.
+ * @param dst двойной указатель на строку назначение
+ * @param src исходная строка
+ * @note если dst уже выделено в куче, то старая память освобождается
+ */
+static void create_copy_string(char **dst, const char *src)
+{
+	free(*dst);
+
+	if (src == NULL || *src == '\0') {
+		(*dst) = NULL;
+		return;
+	}
+
+	(*dst) = strdup(src);
+	return;
+}
 
 ct_message_t *ct_message_create()
 {
 	ct_message_t *ct_message = (ct_message_t *) calloc(sizeof (ct_message_t), 1);
 
 	if (ct_message) {
-		ct_message->text = calloc(1, 1);
+		ct_message->message_type = ct_message_type_unknown;
 	}
 
 	return ct_message;
@@ -42,10 +62,9 @@ ct_message_t *ct_message_create()
 
 void ct_message_free(ct_message_t *ct_message)
 {
-	if (ct_message->text) {
-		free(ct_message->text);
-	}
-
+	free(ct_message->text);
+	free(ct_message->file_id);
+	free(ct_message->caption);
 	free(ct_message);
 }
 
@@ -66,8 +85,17 @@ void ct_message_set_chat_id(ct_message_t *ct_message, ssize_t chat_id)
 
 void ct_message_set_text(ct_message_t *ct_message, const char *text)
 {
-	free(ct_message->text);
-	ct_message->text = strdup(text);
+	create_copy_string(&ct_message->text, text);
+}
+
+void ct_message_set_file_id(ct_message_t *ct_message, const char *file_id)
+{
+	create_copy_string(&ct_message->file_id, file_id);
+}
+
+void ct_message_set_caption(ct_message_t *ct_message, const char *caption)
+{
+	create_copy_string(&ct_message->caption, caption);
 }
 
 ssize_t ct_message_get_message_id(const ct_message_t *ct_message)
@@ -90,3 +118,22 @@ const char *ct_message_get_text(const ct_message_t *ct_message)
 	return ct_message->text;
 }
 
+void ct_message_set_message_type(ct_message_t *ct_message, ct_message_type_t message_type)
+{
+	ct_message->message_type = message_type;
+}
+
+const char *ct_message_get_caption(const ct_message_t *ct_message)
+{
+	return ct_message->caption;
+}
+
+const char *ct_message_get_file_id(const ct_message_t *ct_message)
+{
+	return ct_message->file_id;
+}
+
+ct_message_type_t ct_message_get_message_type(const ct_message_t *ct_message)
+{
+	return ct_message->message_type;
+}

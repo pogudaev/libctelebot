@@ -27,6 +27,12 @@ freely, subject to the following restrictions:
 struct ct_message_s;
 typedef struct ct_message_s ct_message_t;
 
+typedef enum {
+	ct_message_type_unknown,
+	ct_message_type_text,
+	ct_message_type_photo
+} ct_message_type_t;
+
 /**
  * @brief ct_message_create создает объект ct_message_t
  * @return указатель на объект ct_message_t, или NULL в случае ошибки
@@ -69,6 +75,27 @@ void ct_message_set_chat_id(ct_message_t *ct_message, ssize_t chat_id);
 void ct_message_set_text(ct_message_t *ct_message, const char *text);
 
 /**
+ * @brief ct_message_set_file_id устанавливает идентификатор передаваемого файла
+ * @param ct_message указатель на объект ct_message_t
+ * @param file_id текстовый идентификатор
+ */
+void ct_message_set_file_id(ct_message_t *ct_message, const char *file_id);
+
+/**
+ * @brief ct_message_set_caption устанавливает описание передаваемого файла
+ * @param ct_message указатель на объект ct_message_t
+ * @param caption описание
+ */
+void ct_message_set_caption(ct_message_t *ct_message, const char *caption);
+
+/**
+ * @brief ct_message_set_message_type устанавливает тип сообщения по содержимому
+ * @param ct_message указатель на объект ct_message_t
+ * @param message_type тип сообщения
+ */
+void ct_message_set_message_type(ct_message_t *ct_message, ct_message_type_t message_type);
+
+/**
  * @brief ct_message_get_message_id получает идентификатор сообщения
  * @param ct_message указатель на объект ct_message_t
  * @return идентификатор сообщения
@@ -95,5 +122,26 @@ ssize_t ct_message_get_chat_id(const ct_message_t *ct_message);
  * @return указатель на текст сообщения
  */
 const char *ct_message_get_text(const ct_message_t *ct_message);
+
+/**
+ * @brief ct_message_get_caption получает описание файла
+ * @param ct_message указатель на объект ct_message_t
+ * @return указатель на текст с описанием файла
+ */
+const char *ct_message_get_caption(const ct_message_t *ct_message);
+
+/**
+ * @brief ct_message_get_file_id получает идентификатор файла
+ * @param ct_message указатель на объект ct_message_t
+ * @return указатель на текст с идентификатором файла
+ */
+const char *ct_message_get_file_id(const ct_message_t *ct_message);
+
+/**
+ * @brief ct_message_get_message_type получает тип сообщения
+ * @param ct_message указатель на объект ct_message_t
+ * @return тип сообщения
+ */
+ct_message_type_t ct_message_get_message_type(const ct_message_t *ct_message);
 
 #endif // CT_MESSAGE_H

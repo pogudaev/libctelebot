@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 #include <ct_param_list.h>
 #include <string.h>
 #include <ct_buffer.h>
+#include <ct_common.h>
 
 struct ct_param_list_elem_s;
 typedef struct ct_param_list_elem_s ct_param_list_elem_t;
@@ -110,6 +111,11 @@ static void ct_param_list_add(ct_param_list_t *ct_param_list, char *param_name, 
 
 void ct_param_list_add_string(ct_param_list_t *ct_param_list, const char *param_name, const char *param_value)
 {
+	if (param_name == NULL || param_value == NULL) {
+		ct_log_warning("Bad param_name or param_value. Skip");
+		return;
+	}
+
 	ct_buffer_t *ct_buffer = ct_buffer_create();
 	ct_buffer_set_string(ct_buffer, param_value);
 	ct_param_list_add(ct_param_list, strdup(param_name), ct_buffer, ct_type_default);
@@ -117,6 +123,11 @@ void ct_param_list_add_string(ct_param_list_t *ct_param_list, const char *param_
 
 void ct_param_list_add_integer(ct_param_list_t *ct_param_list, const char *param_name, ssize_t param_value)
 {
+	if (param_name == NULL) {
+		ct_log_warning("Bad param_name. Skip");
+		return;
+	}
+
 	ct_buffer_t *ct_buffer = ct_buffer_create();
 	char tmp[32];
 	snprintf(tmp, sizeof (tmp), "%zd", param_value);
@@ -126,6 +137,11 @@ void ct_param_list_add_integer(ct_param_list_t *ct_param_list, const char *param
 
 void ct_param_list_add_boolean(ct_param_list_t *ct_param_list, const char *param_name, bool param_value)
 {
+	if (param_name == NULL) {
+		ct_log_warning("Bad param_name. Skip");
+		return;
+	}
+
 	ct_buffer_t *ct_buffer = ct_buffer_create();
 
 	if (param_value) {
@@ -139,6 +155,11 @@ void ct_param_list_add_boolean(ct_param_list_t *ct_param_list, const char *param
 
 void ct_param_list_add_image(ct_param_list_t *ct_param_list, const char *param_name, const ct_buffer_t *param_data)
 {
+	if (param_name == NULL || param_data == NULL) {
+		ct_log_warning("Bad param_name or param_data. Skip");
+		return;
+	}
+
 	ct_buffer_t *ct_buffer = ct_buffer_create();
 	ct_buffer_set(ct_buffer, ct_buffer_get_data(param_data), ct_buffer_get_size(param_data));
 	ct_param_list_add(ct_param_list, strdup(param_name), ct_buffer, ct_type_image_jpeg);

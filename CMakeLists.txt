@@ -6,7 +6,7 @@ option(BUILD_SHARED_LIBS "Build the shared library" ON)
 
 #============================== VERSION ================================
 set(LIB_VERSION_MAJOR 1)
-set(LIB_VERSION_MINOR 0)
+set(LIB_VERSION_MINOR 1)
 set(LIB_VERSION_PATCH 0)
 set(LIB_VERSION_STRING ${LIB_VERSION_MAJOR}.${LIB_VERSION_MINOR}.${LIB_VERSION_PATCH})
 #=======================================================================
@@ -38,7 +38,7 @@ set(CT_PUBLIC_HDRS
 #указываем путь для хедеров
 include_directories(BEFORE ./include)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Werror -Wall -std=gnu99 -Os")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Werror -Wall -std=gnu99") #-Os -g3
 aux_source_directory(./src SRC_LIST)
 
 if (BUILD_STATIC_LIBS OR BUILD_SHARED_LIBS)
