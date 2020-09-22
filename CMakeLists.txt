@@ -7,7 +7,7 @@ option(BUILD_SHARED_LIBS "Build the shared library" ON)
 #============================== VERSION ================================
 set(LIB_VERSION_MAJOR 1)
 set(LIB_VERSION_MINOR 1)
-set(LIB_VERSION_PATCH 2)
+set(LIB_VERSION_PATCH 3)
 set(LIB_VERSION_STRING ${LIB_VERSION_MAJOR}.${LIB_VERSION_MINOR}.${LIB_VERSION_PATCH})
 #=======================================================================
 
@@ -32,6 +32,8 @@ set(CT_PUBLIC_HDRS
     include/ct_buffer.h
     include/ct_common.h
     include/ct_message.h
+    include/ct_net_api.h
+    include/ct_param_list.h
     #остальные хедеры не нужны для использования библиотеки
 )
 
