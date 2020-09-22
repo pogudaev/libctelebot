@@ -33,7 +33,7 @@ static size_t write_data_cb(void *contents, size_t size, size_t nmemb, void *use
 	return realsize;
 }
 
-ct_buffer_t *ct_load_file(const char *req)
+ct_buffer_t *ct_load_file_with_auth(const char *req, const char *login, const char *password)
 {
 	ct_buffer_t *answer = ct_buffer_create();
 
@@ -47,6 +47,12 @@ ct_buffer_t *ct_load_file(const char *req)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) answer);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //Возможно небезопасно!!
 		curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+		if (login) {
+			curl_easy_setopt(curl, CURLOPT_USERNAME, login);
+		}
+		if (password) {
+			curl_easy_setopt(curl, CURLOPT_PASSWORD, password);
+		}
 
 		res = curl_easy_perform(curl);
 
@@ -60,7 +66,11 @@ ct_buffer_t *ct_load_file(const char *req)
 	curl_global_cleanup();
 
 	return answer;
+}
 
+ct_buffer_t *ct_load_file(const char *req)
+{
+	return ct_load_file_with_auth(req, NULL, NULL);
 }
 
 typedef struct {

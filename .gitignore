@@ -2,8 +2,10 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 libctelebot.so
+libctelebot_static.a
 cmake_install.cmake
 install_manifest.txt
 build/
+.*
 
 

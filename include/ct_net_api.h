@@ -44,6 +44,16 @@ json_t *ct_post(const char *req, ct_param_list_t *params);
  */
 ct_buffer_t *ct_load_file(const char *req);
 
+/**
+ * @brief ct_load_file загружает файл
+ * @param req reqest line
+ * @param login логин
+ * @param password пароль
+ * @return буфер с файлом
+ * @note буфер создается в куче и требует последущего освобождения памяти
+ */
+ct_buffer_t *ct_load_file_with_auth(const char *req, const char *login, const char *password);
+
 #ifdef __cplusplus
 }
 #endif
